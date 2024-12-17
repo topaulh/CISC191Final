@@ -13,10 +13,10 @@ public class POS {
         Product product = inventory.findProduct(productName);
         if (product != null && product.getStockLevel() >= quantity) {
             cart.add(new Product(product.getName(), product.getPrice(), quantity));
-            product.updateStock(-quantity); // Reduce stock in inventory
+            product.updateStock(-quantity);
             return true;
         }
-        return false; // Insufficient stock or invalid product
+        return false;
     }
 
     public double calculateTotal() {
@@ -27,16 +27,19 @@ public class POS {
         return total;
     }
 
-    public void processTransaction() {
-        cart.clear();
-    }
-
     public String displayCart() {
-        if (cart.isEmpty()) return "Cart is empty.";
+        if (cart.isEmpty()) {
+            return "Cart is empty.";
+        }
+
         StringBuilder builder = new StringBuilder();
         for (Product product : cart) {
             builder.append(product.getProductDetails()).append("\n");
         }
         return builder.toString();
+    }
+
+    public void processTransaction() {
+        cart.clear();
     }
 }

@@ -20,26 +20,25 @@ public class Inventory {
         Product product = findProduct(productName);
         if (product != null) {
             products.remove(product);
+        } else {
+            System.out.println("Product not found.");
         }
     }
 
     public Product findProduct(String productName) {
         for (Product product : products) {
-            if (product.getName().equalsIgnoreCase(productName)) { // Fixed typo
+            if (product.getName().equalsIgnoreCase(productName)) {
                 return product;
             }
         }
         return null;
     }
 
-    public ArrayList<Product> getProducts() {
-        return new ArrayList<>(products);
-    }
-
     public String displayInventory() {
         if (products.isEmpty()) {
             return "Inventory is empty.";
         }
+
         StringBuilder builder = new StringBuilder();
         for (Product product : products) {
             builder.append(product.getProductDetails()).append("\n");
@@ -47,5 +46,3 @@ public class Inventory {
         return builder.toString();
     }
 }
-
-

@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Main {
     private Inventory inventory = new Inventory();
@@ -21,23 +23,21 @@ public class Main {
     private void createGUI() {
         JFrame frame = new JFrame("Retail Store POS System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
+        frame.setSize(600, 400);
         frame.setLayout(new BorderLayout());
 
         // Inventory Area
         inventoryArea = new JTextArea(inventory.displayInventory());
         inventoryArea.setEditable(false);
-        JButton refreshInventory = new JButton("Refresh Inventory");
-        refreshInventory.addActionListener(e -> inventoryArea.setText(inventory.displayInventory()));
-
-        JPanel inventoryPanel = new JPanel(new BorderLayout());
-        inventoryPanel.add(new JScrollPane(inventoryArea), BorderLayout.CENTER);
-        inventoryPanel.add(refreshInventory, BorderLayout.SOUTH);
+        frame.add(new JScrollPane(inventoryArea), BorderLayout.CENTER);
 
         // Cart Area
         cartArea = new JTextArea("Cart is empty.");
         cartArea.setEditable(false);
+        JPanel cartPanel = new JPanel(new BorderLayout());
+        cartPanel.add(new JScrollPane(cartArea), BorderLayout.CENTER);
         JButton checkoutButton = new JButton("Checkout");
+
         checkoutButton.addActionListener(e -> {
             double total = pos.calculateTotal();
             JOptionPane.showMessageDialog(frame, "Total: $" + total);
@@ -46,21 +46,19 @@ public class Main {
             inventoryArea.setText(inventory.displayInventory());
         });
 
-        JPanel cartPanel = new JPanel(new BorderLayout());
-        cartPanel.add(new JScrollPane(cartArea), BorderLayout.CENTER);
         cartPanel.add(checkoutButton, BorderLayout.SOUTH);
+        frame.add(cartPanel, BorderLayout.EAST);
 
-        // Add to Cart Panel
-        JPanel addToCartPanel = new JPanel(new GridLayout(3, 2));
+        // Add Product to Cart
+        JPanel inputPanel = new JPanel(new GridLayout(3, 2));
         JTextField productNameField = new JTextField();
         JTextField quantityField = new JTextField();
         JButton addToCartButton = new JButton("Add to Cart");
 
         addToCartButton.addActionListener(e -> {
             String productName = productNameField.getText();
-            int quantity;
             try {
-                quantity = Integer.parseInt(quantityField.getText());
+                int quantity = Integer.parseInt(quantityField.getText());
                 if (pos.addToCart(productName, quantity)) {
                     cartArea.setText(pos.displayCart());
                     inventoryArea.setText(inventory.displayInventory());
@@ -72,17 +70,13 @@ public class Main {
             }
         });
 
-        addToCartPanel.add(new JLabel("Product Name:"));
-        addToCartPanel.add(productNameField);
-        addToCartPanel.add(new JLabel("Quantity:"));
-        addToCartPanel.add(quantityField);
-        addToCartPanel.add(addToCartButton);
+        inputPanel.add(new JLabel("Product Name:"));
+        inputPanel.add(productNameField);
+        inputPanel.add(new JLabel("Quantity:"));
+        inputPanel.add(quantityField);
+        inputPanel.add(addToCartButton);
 
-        // Combine Panels
-        frame.add(inventoryPanel, BorderLayout.WEST);
-        frame.add(cartPanel, BorderLayout.EAST);
-        frame.add(addToCartPanel, BorderLayout.SOUTH);
-
+        frame.add(inputPanel, BorderLayout.SOUTH);
         frame.setVisible(true);
     }
 
@@ -90,3 +84,4 @@ public class Main {
         SwingUtilities.invokeLater(Main::new);
     }
 }
+
